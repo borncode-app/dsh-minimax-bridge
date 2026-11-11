@@ -1,0 +1,108 @@
+# Shares one MiniMax Code setup with this Harness.
+#
+# Row 1 is active: it serves the skills that live under the MiniMax Code home
+# (~/.minimax by default) — its installed skills, its plugin skills, and its
+# custom-agent skills — without copying them, so MiniMax Code keeps owning and
+# updating them.
+#
+# Rows 2-4 are the MCP servers MiniMax Code is configured with, taken from
+# ~/.minimax/mcp.json. They ship disabled: mcp-reverse alone publishes 111 tools
+# and rea publishes 229, which would be paid for in every request. Enable the
+# ones you want in Plugins, or with `plugin_manager` `set_plugin`.
+
+- insert:
+    - id: minimax-bridge
+      name: '@local/dsh-minimax-bridge'
+      config:
+        # Empty selects $MINIMAX_HOME, else ~/.minimax.
+        minimaxHome: ''
+        includeUserSkills: true
+        includePluginSkills: true
+        includeAgentSkills: true
+        # Additional roots, read after the MiniMax ones.
+        extraSkillDirs: []
+        # Republish the catalog when MiniMax Code changes a skill or installs a
+        # plugin or agent, without restarting the Harness.
+        watch: true
+
+    # Row 2 is active: it publishes the agents of the same MiniMax home as
+    # Harness agent presets. The built-in roles (mavis, explore, worker,
+    # verifier) and any agent the user creates in MiniMax Code become
+    # selectable presets here; a file MiniMax Code rewrites is republished
+    # without a restart.
+    - id: minimax-agent-bridge
+      name: '@local/dsh-minimax-bridge/agents'
+      config:
+        # Empty selects $MINIMAX_HOME, else ~/.minimax.
+        minimaxHome: ''
+        # MiniMax Code surface whose prompt is published: coding, work, or tui.
+        mode: coding
+        includeBuiltin: true
+        includeUserAgents: true
+        # Sections the Harness provides itself. "Harness" describes the
+        # MiniMax Code tool surface; "Media Output" describes <media> tags
+        # only the MiniMax Code client renders.
+        stripSections:
+          - Harness
+          - Media Output
+        # Republish when MiniMax Code rewrites, adds, or removes an agent.
+        watch: true
+        # Upper bound on one published persona.
+        maxPersonaChars: 60000
+
+    # REA — static/dynamic reverse-engineering suite (229 tools).
+    - id: minimax-mcp-rea
+      name: '@deepseek-ai/dsh-mcp-client'
+      disabled: true
+      config:
+        serverName: rea
+        transport: stdio
+        command: 'C:\Program Files\nodejs\node.exe'
+        args:
+          - 'C:\Users\snowb4ll\AppData\Roaming\npm\node_modules\rea-agents\scripts\rea.mjs'
+          - 'mcp'
+        # The toolchain paths MiniMax Code passes this server. The launcher
+        # inherits this Harness's PATH, so add any directory you also need here.
+        env:
+          GHIDRA_INSTALL_DIR: 'C:\ProgramData\Ghidra\ghidra_12.1.4_PUBLIC'
+          JAVA_HOME: 'C:\Program Files\Android\Android Studio\jbr'
+          REA_WABT_BIN_DIRECTORY: 'C:\ProgramData\wabt\wabt-1.0.42\bin'
+          REA_JADX_MCP_JAR: 'C:\ProgramData\jadx\jadx-headless-mcp-0.7.1-all.jar'
+          REA_APKTOOL_COMMAND: 'C:\Users\snowb4ll\Tools\apktool\apktool.bat'
+          REA_BROWSER_EXECUTABLE: 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+          REA_TSHARK_COMMAND: 'C:\Program Files\Wireshark\tshark.exe'
+          REA_CAPINFOS_COMMAND: 'C:\Program Files\Wireshark\capinfos.exe'
+          REA_KUNA_COMMAND: 'C:\ProgramData\kuna\kuna-v1.833-windows-x86_64\kuna.exe'
+          REA_IDA_MCP_CONFIG: 'C:\ProgramData\ida\ida-mcp.json'
+          REA_RIZIN_COMMAND: 'C:\Program Files\Rizin\bin\rizin.exe'
+          REA_OBJDUMP_COMMAND: 'C:\Users\snowb4ll\AppData\Local\Microsoft\WinGet\Packages\BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe\mingw64\bin\objdump.exe'
+        toolCallTimeoutMs: 600000
+
+    # PhotoCraft — image tooling over a local bridge.
+    - id: minimax-mcp-photocraft
+      name: '@deepseek-ai/dsh-mcp-client'
+      disabled: true
+      config:
+        serverName: photocraft
+        transport: stdio
+        command: 'C:\Users\snowb4ll\Apps\photocraft\photocraft-0.16.0-windows-x64-portable\photocraft-cli.exe'
+        args:
+          - mcp
+          - '--bridge'
+          - 127.0.0.1:17890
+          - '--control-token-file'
+          - 'C:\Users\snowb4ll\Apps\photocraft\control-token.txt'
+
+    # mcp-reverse — native reverse-engineering parsers (111 tools).
+    - id: minimax-mcp-reverse
+      name: '@deepseek-ai/dsh-mcp-client'
+      disabled: true
+      config:
+        serverName: mcp-reverse
+        transport: stdio
+        command: 'C:\Program Files\nodejs\node.exe'
+        args:
+          - 'C:\Users\snowb4ll\Tools\mcp-reverse\dist\index.js'
+        env:
+          MCP_SKILLS_DB: 'C:\Users\snowb4ll\Tools\mcp-reverse\db\skills-full.db'
+        toolCallTimeoutMs: 600000

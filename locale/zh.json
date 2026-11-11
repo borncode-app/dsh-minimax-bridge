@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "MiniMax 桥接",
+    "description": "让此 Harness 使用 MiniMax Code 的技能，并声明它的 MCP 服务器，一套配置供两个应用共用。"
+  }
+}

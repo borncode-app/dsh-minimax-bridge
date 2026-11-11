@@ -1,0 +1,36 @@
+{
+  "name": "@local/dsh-minimax-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Serves a MiniMax Code home directory's skills to this Harness and declares its MCP servers as optional rows.",
+  "author": "BornCode (https://github.com/borncode-app)",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/borncode-app/dsh-minimax-bridge.git" },
+  "homepage": "https://github.com/borncode-app/dsh-minimax-bridge#readme",
+  "bugs": { "url": "https://github.com/borncode-app/dsh-minimax-bridge/issues" },
+  "keywords": ["dsh","deepseek-harness","dsh-plugin","minimax","skills","agents","mcp","bridge"],
+  "exports": {
+    ".": "./index.js",
+    "./agents": "./agents.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "agents.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "dependencies": {
+    "@deepseek-ai/schemastery": "~3.19.0",
+    "yaml": "^2.8.1"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
