@@ -12,6 +12,17 @@
 
 ---
 
+## Where the one-entry kit lives
+
+This plugin, `dsh-minimax-credit`, `dsh-minimax-checkin`, `dsh-minimax-model-sync`
+and `dsh-model-quota` are also published as one bundle:
+**[`dsh-minimax-kit`](https://github.com/borncode-app/dsh-minimax-kit)**.
+
+Install the kit instead if you want the whole MiniMax set from a single
+**Plugins** entry. It ships these same packages as separate rows, so the code
+here is unchanged and each part keeps its own switch — this repository stays
+the home of the skills bridge and the agent presets.
+
 ## What it does
 
 MiniMax Code keeps its own home directory (`~/.minimax` by default) with skills, agents, plugins, and a
